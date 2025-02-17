@@ -2,6 +2,8 @@ import express from "express";
 
 // Initializes an Express server
 const app = express();
+// Middleware (Helps to accept JSON format)
+app.use(express.json());
 
 const books = [
     {
@@ -21,6 +23,12 @@ app.get("/", (req, res) => {
 
 app.get("/books", (req, res) => {
     res.status(200).json(books);
+});
+
+// Create new book (using requisition/method post)
+app.post("/books", (req, res) => {
+    books.push(req.body);
+    res.status(201).send("Successfully registered book")
 });
 
 export default app;
