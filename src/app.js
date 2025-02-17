@@ -18,17 +18,6 @@ const app = express();
 // Middleware (Helps to accept JSON format)
 app.use(express.json());
 
-const books = [
-    {
-        id: 1,
-        title: "The lord of the rings"
-    },
-    {
-        id: 2,
-        title: "The Hobbit"
-    }
-]
-
 // returns index of the fetched element (-1 if it doesn't exist)
 function searchBook(id) {
     return books.findIndex(book => {
