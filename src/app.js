@@ -16,6 +16,14 @@ const books = [
     }
 ]
 
+// returns index of the fetched element (-1 if it doesn't exist)
+function searchBook(id) {
+    return books.findIndex(book => {
+        // Traffic information as string
+        return book.id === Number(id);
+    });
+}
+
 // Manages routes (using GET method/request)
 app.get("/", (req, res) => {
     res.status(200).send("Curse of Node.js");
@@ -23,6 +31,16 @@ app.get("/", (req, res) => {
 
 app.get("/books", (req, res) => {
     res.status(200).json(books);
+});
+
+app.get("/books/:id", (req, res) => {
+    const bookIndex = searchBook(req.params.id);
+    // If the index fetched doesn't exist
+    if (bookIndex === -1) {
+        return res.status(404).json({ error: "Livro não encontrado" });
+    }
+
+    res.status(200).json(books[bookIndex]);
 });
 
 // Create new book (using requisition/method post)
