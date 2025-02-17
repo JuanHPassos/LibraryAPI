@@ -24,6 +24,8 @@ function searchBook(id) {
     });
 }
 
+// Read
+
 // Manages routes (using GET method/request)
 app.get("/", (req, res) => {
     res.status(200).send("Curse of Node.js");
@@ -37,11 +39,13 @@ app.get("/books/:id", (req, res) => {
     const bookIndex = searchBook(req.params.id);
     // If the index fetched doesn't exist
     if (bookIndex === -1) {
-        return res.status(404).json({ error: "Livro não encontrado" });
+        return res.status(404).json({ error: "Book not found" });
     }
 
     res.status(200).json(books[bookIndex]);
 });
+
+// Create
 
 // Create new book (using requisition/method post)
 app.post("/books", (req, res) => {
@@ -49,17 +53,35 @@ app.post("/books", (req, res) => {
     res.status(201).send("Successfully registered book")
 });
 
+// Update
+
 app.put("/books/:id", (req, res) => {
     const bookIndex = searchBook(req.params.id);
 
     // If the index fetched doesn't exist
     if (bookIndex === -1) {
-        return res.status(404).json({ error: "Livro não encontrado" });
+        return res.status(404).json({ error: "Book not found" });
     }
 
     // Change the name of the book
     books[bookIndex].title = req.body.title;
     res.status(200).json(books);
+})
+
+// Delete
+
+app.delete("/books/:id", (req, res) => {
+    const bookIndex = searchBook(req.params.id);
+
+    // If the index fetched doesn't exist
+    if (bookIndex === -1) {
+        return res.status(404).json({ error: "Book not found" });
+    }
+
+    // Delete one element that start at bookIndex
+    books.splice(bookIndex, 1);
+
+    res.status(200).send("Book removed successfully");
 })
 
 export default app;
