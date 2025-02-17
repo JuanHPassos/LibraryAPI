@@ -49,4 +49,17 @@ app.post("/books", (req, res) => {
     res.status(201).send("Successfully registered book")
 });
 
+app.put("/books/:id", (req, res) => {
+    const bookIndex = searchBook(req.params.id);
+
+    // If the index fetched doesn't exist
+    if (bookIndex === -1) {
+        return res.status(404).json({ error: "Livro não encontrado" });
+    }
+
+    // Change the name of the book
+    books[bookIndex].title = req.body.title;
+    res.status(200).json(books);
+})
+
 export default app;
