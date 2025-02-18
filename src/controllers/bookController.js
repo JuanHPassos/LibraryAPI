@@ -1,4 +1,5 @@
-import book from "../models/book.js"
+import book from "../models/Book.js";
+import { author } from "../models/Author.js"
 
 class BookController {
 
@@ -30,11 +31,14 @@ class BookController {
 
     // Create new book (using requisition/method post)
     static async registerBook (req, res) {
+        const newBook = req.body;
         try {
-            const newBook = await book.create(req.body);
+            const authorFound = await author.findById(newBook.author);
+            const completedBook = { ...newBook, autor: { ...authorFound._doc } };
+            const createdBook = await book.create(completedBook);
             res
                 .status(201)
-                .json({ message: "Successfully registered book", book: newBook });
+                .json({ message: "Successfully registered book", book: createdBook });
         } catch (error) {
             res
                 .status(500)
