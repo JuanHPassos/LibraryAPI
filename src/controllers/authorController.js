@@ -1,5 +1,5 @@
 import NotFound from "../errors/NotFound.js";
-import { author } from "../models/Author.js";
+import { author } from "../models/index.js";
 
 class AuthorController {
 
@@ -66,7 +66,7 @@ class AuthorController {
             const id = req.params.id;
 
             const authorResult = await author.findByIdAndDelete(id);
-            
+
             if (authorResult !== null) {
                 res.status(200).json({ message: "Successfully delete author"});
             } else {
