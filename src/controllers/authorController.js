@@ -1,3 +1,4 @@
+import NotFound from "../errors/NotFound.js";
 import { author } from "../models/Author.js";
 
 class AuthorController {
@@ -21,7 +22,7 @@ class AuthorController {
             if (authorFound !== null) {
                 res.status(200).json(authorFound);
             } else {
-                res.status(404).send({message: "Author ID not found"})    
+                next(new NotFound("Author ID not found"));    
             }
         } catch (error) {
             next(error);
@@ -47,8 +48,14 @@ class AuthorController {
     static async updateAuthor (req, res, next) {
         try {
             const id = req.params.id;
-            await author.findByIdAndUpdate(id, req.body);
-            res.status(200).json({ message: "Successfully update author"});
+
+            const authorResult = await author.findByIdAndUpdate(id, {$set: req.body});
+
+            if (authorResult !== null) {
+                res.status(200).json({ message: "Successfully update author"});
+            } else {
+                next(new NotFound("Author ID not found"));    
+            }
         } catch (error) {
             next(error);
         }
@@ -57,10 +64,16 @@ class AuthorController {
     static async deleteAuthor (req, res, next) {
         try {
             const id = req.params.id;
-            await author.findByIdAndDelete(id);
-            res.status(200).json({ message: "Successfully delete author"});
+
+            const authorResult = await author.findByIdAndDelete(id);
+            
+            if (authorResult !== null) {
+                res.status(200).json({ message: "Successfully delete author"});
+            } else {
+                next(new NotFound("Author ID not found"));    
+            }
         } catch (error) {
-            next(error)    
+            next(error);    
         }
     };
 };

@@ -1,5 +1,5 @@
+import NotFound from "../errors/NotFound.js";
 import book from "../models/Book.js";
-import { author } from "../models/Author.js"
 
 class BookController {
 
@@ -21,7 +21,12 @@ class BookController {
             const bookFound = await book.findById(id)
                 .populate("author", "name")
                 .exec();
-            res.status(200).json(bookFound);
+
+            if (bookFound !== null) {
+                res.status(200).json(bookFound);
+            } else {
+                next(new NotFound("Book ID not found"));    
+            }
         } catch (error) {
             next(error);
         }
@@ -45,9 +50,14 @@ class BookController {
     static updateBook = async (req, res, next) => {
         try {
             const id = req.params.id;
-            await book.findByIdAndUpdate(id, req.body);
 
-            res.status(200).json({ message: "Successfully update book"});
+            const bookFound = await book.findByIdAndUpdate(id, {$set: req.body});
+
+            if (bookFound !== null) {
+                res.status(200).json({ message: "Successfully update book"});
+            } else {
+                next(new NotFound("Book ID not found"));    
+            }
         } catch (error) {
             next(error);
         }
@@ -56,8 +66,14 @@ class BookController {
     static deleteBook = async (req, res, next) => {
         try {
             const id = req.params.id;
-            await book.findByIdAndDelete(id);
-            res.status(200).json({ message: "Successfully delete book"});
+
+            const bookFound = await book.findByIdAndDelete(id);
+
+            if (bookFound !== null) {
+                res.status(200).json({ message: "Successfully delete book"});
+            } else {
+                next(new NotFound("Book ID not found"));    
+            }
         } catch (error) {
             next(error);
         }
