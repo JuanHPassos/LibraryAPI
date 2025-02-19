@@ -1,6 +1,7 @@
 import express from "express";
 import connectToDatabase from "./config/dbConnect.js";
 import routes from "./routes/index.js";
+import errorHandler from "./middlewares/errorHandler.js";
 
 const connection = await connectToDatabase();
 
@@ -18,20 +19,7 @@ connection.once("open", () => {
 const app = express();
 routes(app);
 
-// Delete
-
-app.delete("/books/:id", (req, res) => {
-    const bookIndex = searchBook(req.params.id);
-
-    // If the index fetched doesn't exist
-    if (bookIndex === -1) {
-        return res.status(404).json({ error: "Book not found" });
-    }
-
-    // Delete one element that start at bookIndex
-    books.splice(bookIndex, 1);
-
-    res.status(200).send("Book removed successfully");
-})
+// error middleware (executed every request)
+app.use(errorHandler);
 
 export default app;

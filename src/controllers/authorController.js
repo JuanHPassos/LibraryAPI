@@ -2,70 +2,66 @@ import { author } from "../models/Author.js";
 
 class AuthorController {
 
-    static async listAuthors (req, res) {
+    static async listAuthors (req, res, next) {
 
         try {
             // return everything in author collection
             const listAuthors = await author.find({});
             res.status(200).json(listAuthors);
         } catch (error) {
-            res
-                .status(500)
-                .json({ message: `${error.message} - request failed`});
+            next(error);
         }
-    }
-    
-    static async listAuthorById (req, res) {
+    };
+
+    static async listAuthorById (req, res, next) {
 
         try {
+            // string
             const id = req.params.id;
             const authorFound = await author.findById(id);
-            res.status(200).json(authorFound);
+
+            if (authorFound !== null) {
+                res.status(200).json(authorFound);
+            } else {
+                res.status(404).send({message: "Author ID not found"})    
+            }
         } catch (error) {
-            res
-                .status(500)
-                .json({ message: `${error.message} - author request failed`});
+            next(error);
         }
-    }
+    };
 
     // Create new author (using requisition/method post)
-    static async registerAuthor (req, res) {
+    static async registerAuthor (req, res, next) {
         try {
             const newAuthor = await author.create(req.body);
             res
                 .status(201)
                 .json({ message: "Successfully registered author", author: newAuthor });
         } catch (error) {
-            res
-                .status(500)
-                .json({ message: `${error.message} - failed to register author`});
+            next(error);
         }
-    }
+    };
 
-    static async updateAuthor (req, res) {
+    static async updateAuthor (req, res, next) {
         
         try {
             const id = req.params.id;
             await author.findByIdAndUpdate(id, req.body);
             res.status(200).json({ message: "Successfully update author"});
         } catch (error) {
-            res
-                .status(500)
-                .json({ message: `${error.message} - author update failed`});
+            next(error);
         }
-    }
+    };
 
-    static async deleteAuthor (req, res) {
+    static async deleteAuthor (req, res, next) {
         try {
             const id = req.params.id;
             await author.findByIdAndDelete(id);
             res.status(200).json({ message: "Successfully delete author"});
         } catch (error) {
-            res
-                .status(500)
-                .json({ message: `${error.message} - author delete failed`});
+            next(error)    
         }
-    }
+    };
 };
 
 export default AuthorController;
