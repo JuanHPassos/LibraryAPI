@@ -8,7 +8,7 @@ const bookSchema = new mongoose.Schema({
     publisher: { type: String },
     price: { type: Number },
     pages: { type: Number },
-    autor: authorSchema
+    author: authorSchema
 }, { versionKey: false });
 
 // Create model ( object: collection at database - "interface" )

@@ -3,7 +3,6 @@ import { author } from "../models/Author.js";
 class AuthorController {
 
     static async listAuthors (req, res, next) {
-
         try {
             // return everything in author collection
             const listAuthors = await author.find({});
@@ -14,7 +13,6 @@ class AuthorController {
     };
 
     static async listAuthorById (req, res, next) {
-
         try {
             // string
             const id = req.params.id;
@@ -33,17 +31,20 @@ class AuthorController {
     // Create new author (using requisition/method post)
     static async registerAuthor (req, res, next) {
         try {
-            const newAuthor = await author.create(req.body);
+            // const newAuthor = await author.create(req.body);
+            const newAuthor = new author(req.body);
+
+            const authorResult = await newAuthor.save();
+
             res
                 .status(201)
-                .json({ message: "Successfully registered author", author: newAuthor });
+                .json({ message: "Successfully registered author", author: authorResult });
         } catch (error) {
             next(error);
         }
     };
 
     static async updateAuthor (req, res, next) {
-        
         try {
             const id = req.params.id;
             await author.findByIdAndUpdate(id, req.body);

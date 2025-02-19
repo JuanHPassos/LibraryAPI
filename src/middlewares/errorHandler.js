@@ -4,8 +4,6 @@ import CastError from "../errors/CastError.js";
 import ValidationError from "../errors/ValidationError.js";
 
 function errorHandler (error, req, res, next) {
-    console.log(error);
-
     if (error instanceof mongoose.Error.CastError) {
         // Bad request
         new CastError().sendResponse(res);
