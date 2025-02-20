@@ -6,8 +6,11 @@ class AuthorController {
     static async listAuthors (req, res, next) {
         try {
             // return everything in author collection
-            const listAuthors = await author.find({});
-            res.status(200).json(listAuthors);
+            const listAuthors = author.find({});
+
+            req.result = listAuthors;
+
+            next();
         } catch (error) {
             next(error);
         }

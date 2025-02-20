@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { authorSchema } from "./Author.js";
+import autopopulate from "mongoose-autopopulate";
 
 // Create Schema
 const bookSchema = new mongoose.Schema({
@@ -25,9 +25,13 @@ const bookSchema = new mongoose.Schema({
     },
     author: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "authors"
+        ref: "authors",
+        autopopulate: true
     }
 }, { versionKey: false });
+
+
+bookSchema.plugin(autopopulate);
 
 // Create model ( object: collection at database - "interface" )
 const book = mongoose.model("books", bookSchema);

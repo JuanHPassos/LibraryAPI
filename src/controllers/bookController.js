@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import NotFound from "../errors/NotFound.js";
 import CastError from "../errors/CastError.js"
 import { author, book } from "../models/index.js";
@@ -7,27 +6,11 @@ class BookController {
 
     static listBooks = async (req, res, next) => {
         try {
-            let { limit = 5, page = 1, sorting = "_id:-1" } = req.query;
+            const searchBooks = book.find();
 
-            let [sortField, order] = sorting.split(":");
+            req.result = searchBooks;
 
-            limit = parseInt(limit);
-            page = parseInt(page);
-            order = parseInt(order);
-
-            if(limit > 0 && page > 0){
-                // return everything in book collection
-                const booksResults = await book.find({})
-                    .sort({ [sortField]: order })
-                    .skip((page - 1)*limit)
-                    .limit(limit)
-                    .populate("author")
-                    .exec();
-
-                res.status(200).json(booksResults);
-            } else {
-                next(new CastError());
-            }
+            next();
         } catch (error) {
             next(error);
         }
@@ -37,8 +20,6 @@ class BookController {
         try {
             const id = req.params.id;
             const bookFound = await book.findById(id)
-                .populate("author", "name")
-                .exec();
 
             if (bookFound !== null) {
                 res.status(200).json(bookFound);
@@ -48,7 +29,7 @@ class BookController {
         } catch (error) {
             next(error);
         }
-    }
+    };
 
     // Create new book (using requisition/method post)
     static registerBook = async (req, res, next) => {
@@ -63,7 +44,7 @@ class BookController {
         } catch (error) {
             next(error);
         }
-    }
+    };
 
     static updateBook = async (req, res, next) => {
         try {
@@ -79,7 +60,7 @@ class BookController {
         } catch (error) {
             next(error);
         }
-    }
+    };
 
     static deleteBook = async (req, res, next) => {
         try {
@@ -95,25 +76,25 @@ class BookController {
         } catch (error) {
             next(error);
         }
-    }
+    };
 
     static async listBooksByFilter (req, res, next) {
         try {
             const search = await processSearch(req.query);
 
             if (search !== null){
-                const booksResults = await book
-                    .find(search)
-                    .populate("author");
+                const booksResults = book.find(search)
 
-                res.status(200).json(booksResults);
+                req.result = booksResults;
+
+                next();
             } else {
                 res.status(200).send([]);
             }
         } catch (error) {
             next(error);
         }
-    }
+    };
 };
 
 async function processSearch (params) {
