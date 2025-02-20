@@ -23,7 +23,10 @@ const bookSchema = new mongoose.Schema({
             message: "The number of pages must be between 10 and 5000. Value provided: {VALUE}"
         }
     },
-    author: authorSchema
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "authors"
+    }
 }, { versionKey: false });
 
 // Create model ( object: collection at database - "interface" )

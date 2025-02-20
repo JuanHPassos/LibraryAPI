@@ -10,7 +10,7 @@ function errorHandler (error, req, res, next) {
         new CastError().sendResponse(res);
     } else if (error instanceof mongoose.Error.ValidationError) {
         new ValidationError(error).sendResponse(res);
-    } else if (error instanceof NotFound) {
+    } else if (error instanceof BasicError) {
         error.sendResponse(res);
     } else {
         new BasicError().sendResponse(res);
